@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* .active {
+  position: relative;
+}
+
+.active::before {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: 30px;
+  background: white;
+  transform: rotate(135deg);
+  border-width: 7px;
+  border-left-color: transparent;
+  border-top-color: transparent;
+} */
