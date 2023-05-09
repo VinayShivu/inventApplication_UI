@@ -30,7 +30,7 @@ const SignUpComponent = () => {
       alert("Please enter valid credentials");
     } else {
       axios({
-        url: "https://localhost:7116/api/adduser",
+        url: "https://localhost:7101/api/registerr",
         method: "POST",
         data: inputJson,
       }).then((res) => {
