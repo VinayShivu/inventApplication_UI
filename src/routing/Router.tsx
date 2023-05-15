@@ -11,7 +11,7 @@ import ReportComponent from "../screens/Report";
 import PurchaseComponent from "../screens/Purchase";
 import LayoutComponent from "./Layout";
 import AddSupplier from "../screens/AddSupplier";
-import refreshToken from "../helpers/tokenHelper";
+import ForgotPassword from "../screens/ForgotPassword";
 
 const Router = () => {
   return (
@@ -28,7 +28,8 @@ const Router = () => {
           <Route path="addsupplier" element={<AddSupplier />} />
         </Route>
         <Route path="login" index element={<LoginComponent />} />
-        <Route path="login/register" element={<SignUpComponent />} />
+        <Route path="register" element={<SignUpComponent />} />
+        <Route path="forgotpassword" element={<ForgotPassword />} />
       </Routes>
     </BrowserRouter>
   );

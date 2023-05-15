@@ -2,9 +2,22 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../images/registerBackground.jpg";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const SignUpComponent = () => {
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState({
+    val: false,
+    message: "",
+  });
   const [register, setRegister] = useState({
     firstName: "",
     lastName: "",
@@ -27,26 +40,32 @@ const SignUpComponent = () => {
       register.userName === "" ||
       register.password === ""
     ) {
-      alert("Please enter valid credentials");
+      setShowAlert({ val: true, message: "Please enter valid credentials" });
     } else {
       axios({
         url: "https://localhost:7101/api/register",
         method: "POST",
         data: inputJson,
-      }).then((res) => {
-        if (res.status === 200) {
-          alert("Register Successfull");
-          navigate("/");
-        } else {
-          alert("Registration Unsuccessfull");
-        }
-      });
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            alert("Register Successfull");
+            navigate("/");
+          } else {
+            alert("Registration Unsuccessfull");
+          }
+        })
+        .catch((error) => {
+          if (error.response.status === 400) {
+            alert("User by this username already exists");
+          }
+        });
     }
   };
   return (
     <>
-      <div className="flex flex-col items-center py-24 justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-screen w-full">
-        <div className="h-auto w-96 p-5 border bg-white">
+      <div className="flex flex-col items-center py-24 justify-center bg-slate-500 h-screen w-full">
+        <div className="h-auto w-96 p-5 border bg-sky-700">
           <div className="flex items-center justify-center">
             <div>
               <div className="flex items-center justify-center text-3xl font-bold">
@@ -109,14 +128,34 @@ const SignUpComponent = () => {
             </div>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-3">
           <div
-            className="hover:text-green-500 cursor-pointer text-white"
+            className="hover:text-black cursor-pointer text-white"
             onClick={() => navigate("/login")}
           >
             Back to Login
           </div>
         </div>
+      </div>
+      <div>
+        <Snackbar
+          open={showAlert.val}
+          autoHideDuration={6000}
+          onClose={() => {
+            setShowAlert({ val: false, message: "" });
+          }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => {
+              setShowAlert({ val: false, message: "" });
+            }}
+            severity="warning"
+            style={{ backgroundColor: "#f4473c", color: "#fff" }}
+          >
+            {showAlert.message}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
