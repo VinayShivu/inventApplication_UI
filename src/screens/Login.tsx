@@ -1,4 +1,4 @@
-import axios from "axios";
+import { AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -12,6 +12,7 @@ import {
 import jwt from "jwt-decode";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import { ApiService } from "../services/api.service";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -19,6 +20,19 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+export interface loginResponse {
+  accessToken: string;
+  refreshToken: RefreshToken;
+  created: Date;
+  expires: Date;
+}
+
+export interface RefreshToken {
+  token: string;
+  created: Date;
+  expires: Date;
+}
 
 const LoginComponent = () => {
   const navigate = useNavigate();
@@ -33,39 +47,38 @@ const LoginComponent = () => {
   });
 
   const onSignInClick = () => {
+    const apiObj = {
+      username: login.username,
+      password: login.password,
+    };
     if (login.username === "" || login.password === "") {
       setShowAlert({
         val: true,
         message: "Please enter valid credentials",
       });
     } else {
-      axios
-        .get(
-          `https://localhost:7101/api/login?username=${login.username}&password=${login.password}`
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            let details = res.data;
-            gotResponse(details);
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 400) {
+      ApiService.login(apiObj).then(
+        ({ status, data }: { status: number; data: AxiosResponse<any> }) => {
+          if (status === 200) {
+            gotResponse(data);
+          } else {
             setShowAlert({
               val: true,
-              message: "Invalid username or password",
+              message: "Invalid credentials",
             });
           }
-        });
+        }
+      );
     }
   };
   const gotResponse = (details: any) => {
-    const user: any = jwt(details.accessToken);
+    const responseData = details.data;
+    const user: any = jwt(responseData.accessToken);
     dispatch(updateUserName(user.unique_name));
     dispatch(updateSidebarTab("dashboard"));
-    dispatch(updateToken(details.accessToken));
+    dispatch(updateToken(responseData.accessToken));
     dispatch(updateTokenExpiryTime(user.exp));
-    dispatch(updateRefreshToken(details.refreshToken.token));
+    dispatch(updateRefreshToken(responseData.refreshToken.token));
     navigate("/dashboard");
   };
   return (

@@ -1,9 +1,9 @@
-import axios from "axios";
+import { AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import backgroundImage from "../images/registerBackground.jpg";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import { ApiService } from "../services/api.service";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -42,24 +42,16 @@ const SignUpComponent = () => {
     ) {
       setShowAlert({ val: true, message: "Please enter valid credentials" });
     } else {
-      axios({
-        url: "https://localhost:7101/api/register",
-        method: "POST",
-        data: inputJson,
-      })
-        .then((res) => {
-          if (res.status === 200) {
+      ApiService.signUp(inputJson).then(
+        ({ status, data }: { status: number; data: AxiosResponse<any> }) => {
+          if (status === 200) {
             alert("Register Successfull");
             navigate("/");
           } else {
-            alert("Registration Unsuccessfull");
+            setShowAlert({ val: true, message: "Registration Unsuccessfull" });
           }
-        })
-        .catch((error) => {
-          if (error.response.status === 400) {
-            alert("User by this username already exists");
-          }
-        });
+        }
+      );
     }
   };
   return (

@@ -21,7 +21,7 @@ const sideBarIcons = [
   {
     id: 3,
     icon: "fa-solid fa-users",
-    label: "Customers",
+    label: "Buyers",
     navUrl: "buyer",
   },
   {
@@ -46,7 +46,7 @@ const sideBarIcons = [
     id: 7,
     icon: "fa-solid fa-user",
     label: "Vendors",
-    navUrl: "supplier",
+    navUrl: "vendor",
   },
   {
     id: 8,

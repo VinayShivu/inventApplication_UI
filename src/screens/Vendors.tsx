@@ -7,29 +7,29 @@ import SupplierModal from "../modals/createSupplierModal";
 import { ReducerInitialState } from "../redux/Reducer";
 import { useNavigate } from "react-router-dom";
 
-const SupplierComponent = () => {
+const VendorComponent = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([{}]);
   const [open, setOpen] = useState(false);
   const token = useSelector((state: ReducerInitialState) => state.getToken);
   const dispatch = useDispatch();
-  const breadCrumb = [{ name: "Supplier", path: "/supplier" }];
+  const breadCrumb = [{ name: "Vendors", path: "/vendor" }];
 
   useEffect(() => {
     dispatch(updateBreadCrumb(breadCrumb));
   }, []);
   const columnNames = [
     {
-      id: "supplierId",
-      label: "Supplier Id",
+      id: "vendorId",
+      label: "Vendor Id",
     },
     {
-      id: "supplierName",
-      label: "Supplier Name",
+      id: "companyName",
+      label: "Comapny Name",
     },
     {
-      id: "supplierGST",
-      label: "Supplier GST",
+      id: "vendorGST",
+      label: "Vendor GST",
     },
     {
       id: "email",
@@ -44,10 +44,10 @@ const SupplierComponent = () => {
       label: "Address",
     },
   ];
-  const buttonLabel = "Add Supplier";
+  const buttonLabel = "Add Vendor";
   useEffect(() => {
     axios({
-      url: "https://localhost:7101/api/supplier",
+      url: "https://localhost:7101/api/vendor",
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     }).then((res) => {
@@ -60,7 +60,7 @@ const SupplierComponent = () => {
   };
   const onButtonClick = () => {
     // setOpen(true);
-    navigate("/addsupplier");
+    navigate("/addvendor");
   };
 
   const closeModal = () => {
@@ -92,4 +92,4 @@ const SupplierComponent = () => {
   );
 };
 
-export default SupplierComponent;
+export default VendorComponent;
