@@ -12,6 +12,7 @@ import PurchaseComponent from "../screens/Purchase";
 import LayoutComponent from "./Layout";
 import AddVendor from "../screens/AddVendor";
 import ForgotPassword from "../screens/ForgotPassword";
+import Profile from "../screens/Profile";
 
 const Router = () => {
   return (
@@ -26,6 +27,7 @@ const Router = () => {
           <Route path="invoice" element={<InvoiceComponent />} />
           <Route path="report" element={<ReportComponent />} />
           <Route path="addvendor" element={<AddVendor />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
         <Route path="login" index element={<LoginComponent />} />
         <Route path="register" element={<SignUpComponent />} />

@@ -50,7 +50,14 @@ const HeaderComponent = () => {
                     <div>
                       <i className="fa-solid fa-user"></i>
                     </div>
-                    <div>Profile</div>
+                    <div
+                      onClick={() => {
+                        navigate("profile");
+                        handleClickAway();
+                      }}
+                    >
+                      Profile
+                    </div>
                   </div>
                 </div>
               </ClickAwayListener>

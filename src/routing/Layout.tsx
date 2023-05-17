@@ -44,9 +44,21 @@ const LayoutComponent = () => {
     };
   }, [seconds, timeOut]);
 
+  const token = useSelector((state: ReducerInitialState) => state.getToken);
+  const breadCrumb = [{ name: "dashboard", path: "/" }];
   useEffect(() => {
+    if (token === "") {
+      navigate("/login");
+    } else {
+      navigate("/dashboard");
+    }
+    if (window.performance) {
+      if (performance.navigation.type == 1) {
+        dispatch(updateBreadCrumb(breadCrumb));
+        dispatch(updateSidebarTab("dashboard"));
+      }
+    }
     updateExpireTime();
-
     window.addEventListener("click", updateExpireTime);
     window.addEventListener("keypress", updateExpireTime);
     window.addEventListener("scroll", updateExpireTime);
@@ -59,25 +71,7 @@ const LayoutComponent = () => {
       window.removeEventListener("mousemove", updateExpireTime);
     };
   }, []);
-  const token = useSelector((state: ReducerInitialState) => state.getToken);
-  const breadCrumb = [{ name: "dashboard", path: "/" }];
-  useEffect(() => {
-    if (token === "") {
-      navigate("/login");
-    } else {
-      navigate("/dashboard");
-    }
 
-    if (window.performance) {
-      if (performance.navigation.type == 1) {
-        dispatch(updateBreadCrumb(breadCrumb));
-        dispatch(updateSidebarTab("dashboard"));
-      }
-    }
-  }, []);
-  // useEffect(() => {
-  //   useActivitySessionCheck();
-  // }, []);
   return (
     <>
       <div className="flex h-screen">
