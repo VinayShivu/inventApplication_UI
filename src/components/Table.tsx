@@ -8,14 +8,16 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { makeStyles } from "@mui/styles";
+import { useNavigate } from "react-router-dom";
 
 const useStyles: any = makeStyles({
   root: {
-    backgroundColor: "#f0b8b4",
+    backgroundColor: "#E2E8F0",
   },
 });
 
 export default function StickyHeadTable(props: any) {
+  const navigate = useNavigate();
   const classes = useStyles();
   const { columnNames, rowData } = props;
   const [page, setPage] = React.useState(0);
@@ -46,7 +48,7 @@ export default function StickyHeadTable(props: any) {
                     backgroundColor: "inherit",
                   }}
                 >
-                  {column.label}
+                  <div className="font-bold">{column.label.toUpperCase()}</div>
                 </TableCell>
               ))}
             </TableRow>
@@ -57,7 +59,20 @@ export default function StickyHeadTable(props: any) {
                 <TableRow hover role="checkbox">
                   {columnNames.map((column: any) => {
                     const value = row[column.id];
-                    return <TableCell key={column.id}>{value}</TableCell>;
+                    return (
+                      <TableCell key={column.id}>
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => {
+                            navigate(`/vendordetails/${value}`);
+                          }}
+                        >
+                          {column.id === "payables"
+                            ? `Rs ${value}`
+                            : `${value}`}
+                        </div>
+                      </TableCell>
+                    );
                   })}
                 </TableRow>
               );

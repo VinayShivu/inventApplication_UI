@@ -36,7 +36,7 @@ const HeaderComponent = () => {
               />
             </div>
           </div>
-          <div className="absolute right-5 top-20 float-right">
+          <div className="absolute right-5 top-20 float-right z-10">
             {displayDropdown ? (
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div className="h-32 w-40 bg-white border">

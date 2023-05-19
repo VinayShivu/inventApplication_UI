@@ -1,6 +1,5 @@
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { ReducerInitialState } from "../redux/Reducer";
+import axios, { AxiosResponse } from "axios";
+import { store } from "../redux/Store";
 
 type loginArgs = {
   username: string;
@@ -14,31 +13,40 @@ type signUpArgs = {
   roles: string;
 };
 
-export const ApiService = {
-  login: (args: loginArgs) =>
-    axios
-      .get(
-        `https://localhost:7101/api/login?username=${args.username}&password=${args.password}`
-      )
-      .then((response) => response)
-      .then((response) => {
-        return { status: response.status, data: response };
-      })
-      .catch((error) => {
-        return { status: error.status, data: error };
-      }),
+const getToken = () => {
+  return store.getState().getToken;
+};
 
-  signUp: (args: signUpArgs) =>
-    axios({
-      url: "https://localhost:7101/api/register",
-      method: "POST",
-      data: args,
-    })
-      .then((response) => response)
-      .then((response) => {
-        return { status: response.status, data: response };
-      })
-      .catch((error) => {
-        return { status: error.status, data: error };
-      }),
+const service = axios.create({
+  baseURL: "https://localhost:7101/api",
+});
+
+export const ApiService = {
+  login: (args: loginArgs): Promise<AxiosResponse> => {
+    return service.get(
+      `/login?username=${args.username}&password=${args.password}`
+    );
+  },
+
+  vendors: (): Promise<AxiosResponse> => {
+    return service.get("/vendor", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: ` Bearer ${getToken()}`,
+      },
+    });
+  },
+
+  signUp: (args: signUpArgs): Promise<AxiosResponse> => {
+    return service.post("/register", args);
+  },
+
+  vendorDetails: (args: string | undefined): Promise<AxiosResponse> => {
+    return service.get(`/vendorcompanyname/${args}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: ` Bearer ${getToken()}`,
+      },
+    });
+  },
 };

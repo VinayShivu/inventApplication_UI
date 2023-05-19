@@ -5,8 +5,16 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { ReducerInitialState } from "../redux/Reducer";
-import { updateBreadCrumb, updateSidebarTab } from "../redux/Action";
+import {
+  updateBreadCrumb,
+  updateRefreshToken,
+  updateSidebarTab,
+  updateToken,
+  updateTokenExpiryTime,
+} from "../redux/Action";
 import ActivityModal from "../modals/acticityModal";
+import axios from "axios";
+import jwt from "jwt-decode";
 
 const LayoutComponent = () => {
   const navigate = useNavigate();
@@ -14,6 +22,18 @@ const LayoutComponent = () => {
   const [seconds, setSeconds] = useState(0);
   const [isStay, setIsStay] = useState(false);
   const [timeOut, setTimeOut] = useState(false);
+  const token = useSelector((state: ReducerInitialState) => state.getToken);
+  const breadCrumb = [{ name: "dashboard", path: "/" }];
+  const refreshToken = useSelector(
+    (state: ReducerInitialState) => state.getRefreshToken
+  );
+  const tokenExpiryTime = useSelector(
+    (state: ReducerInitialState) => state.tokenExpiryTime
+  );
+  const refreshTokenData = {
+    accessToken: token,
+    refreshToken: refreshToken,
+  };
 
   const checkForActivity = (sec: any) => {
     const expireTime: string | null = localStorage.getItem("expireTime");
@@ -34,6 +54,27 @@ const LayoutComponent = () => {
     localStorage.setItem("expireTime", expireTime);
   };
 
+  function callRefreshToken() {
+    if (tokenExpiryTime * 1000 < Date.now()) {
+      axios({
+        url: "https://localhost:7101/api/refreshtoken",
+        method: "POST",
+        data: refreshTokenData,
+        headers: { Authorization: `Bearer ${token}` },
+      }).then((res) => {
+        if (res.status === 200) {
+          const details = res.data;
+          const user: any = jwt(details.accessToken);
+          dispatch(updateToken(details.accessToken));
+          dispatch(updateTokenExpiryTime(user.exp));
+          dispatch(updateRefreshToken(details.refreshToken.token));
+        } else {
+          alert("Failure");
+        }
+      });
+    }
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       checkForActivity(seconds);
@@ -44,8 +85,6 @@ const LayoutComponent = () => {
     };
   }, [seconds, timeOut]);
 
-  const token = useSelector((state: ReducerInitialState) => state.getToken);
-  const breadCrumb = [{ name: "dashboard", path: "/" }];
   useEffect(() => {
     if (token === "") {
       navigate("/login");

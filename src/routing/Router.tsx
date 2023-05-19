@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginComponent from "../screens/Login";
 import DashboardComponent from "../screens/Dashboard";
@@ -13,6 +12,7 @@ import LayoutComponent from "./Layout";
 import AddVendor from "../screens/AddVendor";
 import ForgotPassword from "../screens/ForgotPassword";
 import Profile from "../screens/Profile";
+import VendorDetailsComponent from "../screens/VendorDetails";
 
 const Router = () => {
   return (
@@ -28,6 +28,10 @@ const Router = () => {
           <Route path="report" element={<ReportComponent />} />
           <Route path="addvendor" element={<AddVendor />} />
           <Route path="profile" element={<Profile />} />
+          <Route
+            path="vendordetails/:companyName"
+            element={<VendorDetailsComponent />}
+          />
         </Route>
         <Route path="login" index element={<LoginComponent />} />
         <Route path="register" element={<SignUpComponent />} />

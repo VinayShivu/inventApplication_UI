@@ -42,16 +42,19 @@ const SignUpComponent = () => {
     ) {
       setShowAlert({ val: true, message: "Please enter valid credentials" });
     } else {
-      ApiService.signUp(inputJson).then(
-        ({ status, data }: { status: number; data: AxiosResponse<any> }) => {
-          if (status === 200) {
+      ApiService.signUp(inputJson)
+        .then((response) => {
+          if (response.data) {
             alert("Register Successfull");
             navigate("/");
           } else {
             setShowAlert({ val: true, message: "Registration Unsuccessfull" });
           }
-        }
-      );
+        })
+        .catch((error) => {
+          // Handle the error
+          console.error(error);
+        });
     }
   };
   return (

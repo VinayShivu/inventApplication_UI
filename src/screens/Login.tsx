@@ -57,22 +57,19 @@ const LoginComponent = () => {
         message: "Please enter valid credentials",
       });
     } else {
-      ApiService.login(apiObj).then(
-        ({ status, data }: { status: number; data: AxiosResponse<any> }) => {
-          if (status === 200) {
-            gotResponse(data);
-          } else {
-            setShowAlert({
-              val: true,
-              message: "Invalid credentials",
-            });
-          }
-        }
-      );
+      ApiService.login(apiObj)
+        .then((response) => {
+          // Handle the response data
+          gotResponse(response.data);
+        })
+        .catch((error) => {
+          // Handle the error
+          console.error(error);
+        });
     }
   };
   const gotResponse = (details: any) => {
-    const responseData = details.data;
+    const responseData = details;
     const user: any = jwt(responseData.accessToken);
     dispatch(updateUserName(user.unique_name));
     dispatch(updateSidebarTab("dashboard"));
@@ -97,7 +94,7 @@ const LoginComponent = () => {
                 type="email"
                 name="email"
                 placeholder="Email"
-                className="border border-slate-500 rounded-2xl w-80 h-10 bg-white p-2"
+                className="border border-slate-500 rounded-md w-80 h-10 bg-white p-2"
                 onChange={(e) => {
                   setLogin({ ...login, username: e.target.value });
                 }}
@@ -108,7 +105,7 @@ const LoginComponent = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="border border-slate-500 rounded-2xl w-80 h-10 mt-5 bg-white p-2"
+                className="border border-slate-500 rounded-md w-80 h-10 mt-5 bg-white p-2"
                 onChange={(e) => {
                   setLogin({ ...login, password: e.target.value });
                 }}
@@ -123,7 +120,7 @@ const LoginComponent = () => {
           </div>
           <div className="flex items-center justify-center mt-8">
             <div
-              className="rounded-full border flex items-center justify-center w-40 h-10 bg-green-500 text-white cursor-pointer"
+              className="rounded-md border flex items-center justify-center w-40 h-10 bg-green-500 text-white cursor-pointer"
               onClick={() => {
                 onSignInClick();
               }}
